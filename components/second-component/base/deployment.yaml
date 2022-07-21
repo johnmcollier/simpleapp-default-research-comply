@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/created-by: application-service
+    app.kubernetes.io/instance: second-component
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: second-component
+    app.kubernetes.io/part-of: simple-application
+  name: second-component
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: second-component
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: second-component
+    spec:
+      containers:
+      - image: quay.io/redhat-appstudio/user-workload:default-second-component
+        imagePullPolicy: Always
+        name: container-image
+        resources: {}
+status: {}
