@@ -1,0 +1,53 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  creationTimestamp: null
+  name: quarkus-component
+  namespace: default
+spec:
+  params:
+  - name: git-revision
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      annotations:
+        build.appstudio.openshift.io/application: simple-application
+        build.appstudio.openshift.io/build: "true"
+        build.appstudio.openshift.io/component: quarkus-component
+        build.appstudio.openshift.io/type: build
+        build.appstudio.openshift.io/version: "0.1"
+        pipelines.appstudio.openshift.io/type: build
+      creationTimestamp: null
+      generateName: quarkus-component-
+      labels:
+        build.appstudio.openshift.io/application: simple-application
+        build.appstudio.openshift.io/build: "true"
+        build.appstudio.openshift.io/component: quarkus-component
+        build.appstudio.openshift.io/type: build
+        build.appstudio.openshift.io/version: "0.1"
+        pipelines.appstudio.openshift.io/type: build
+      namespace: default
+    spec:
+      params:
+      - name: git-url
+        value: https://github.com/devfile-samples/devfile-sample-code-with-quarkus
+      - name: output-image
+        value: quay.io/redhat-appstudio/user-workload:default-quarkus-component-$(tt.params.git-revision)
+      - name: dockerfile
+        value: src/main/docker/Dockerfile.jvm.staged
+      - name: path-context
+        value: .
+      pipelineRef:
+        bundle: quay.io/redhat-appstudio/build-templates-bundle:b2cb5d5b21dc59d172379e639b336533bd8a8bf6
+        name: docker-build
+      workspaces:
+      - name: workspace
+        persistentVolumeClaim:
+          claimName: appstudio
+        subPath: quarkus-component/$(tt.params.git-revision)
+      - name: registry-auth
+        secret:
+          secretName: redhat-appstudio-registry-pull-secret
+    status: {}
+status: {}
