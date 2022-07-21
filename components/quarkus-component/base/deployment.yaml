@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - image: quay.io/redhat-appstudio/user-workload:default-quarkus-component
-        imagePullPolicy: Always
+        imagePullPolicy: Never
         name: container-image
         resources: {}
 status: {}
